@@ -10,7 +10,7 @@ int collision(struct object* o1, struct object* o2) {
 }
 
 void set_position(struct terrain* terrain, struct object* o, int new_x, int new_y) {
-    if (new_x > 0 && new_y > 0 && new_x < terrain->largeur && new_y < terrain->hauteur) {
+    if (new_x >= 0 && new_y >= 0 && new_x + o->largeur <= terrain->largeur && new_y + o->hauteur <= terrain->hauteur) {
         o->pos_x = new_x;
         o->pos_y = new_y;
     }
