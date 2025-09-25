@@ -2,7 +2,7 @@
 CC=gcc
 
 # on précise la liste des fichiers objets
-OBJ=main.o object.o
+OBJ=main.o object.o input.o
 
 # on précise les options de compilation
 CFLAGS=-std=c11 -Wall -Wextra -pedantic -ggdb
