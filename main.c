@@ -1,26 +1,24 @@
 #define _POSIX_C_SOURCE 199309L
 
-#include <stdio.h>
-#include "object.h"
 #include "input.h"
+#include "object.h"
+#include <stdio.h>
 #include <fcntl.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
 
-#define AVANCER 'z'
-#define RECULER 's'
-#define GAUCHE 'q'
-#define DROITE 'd'
-#define FPS 10
+#define FPS 60
 
 int main(void) {
 	// Set frame
 	double frame_time = 1.0 / FPS;
 
 	// Set user action
-	set_conio_terminal_mode();
+    printf("\e[?25l");
+    set_conio_terminal_mode();
 
     // Set terrain
     struct terrain terrain = {30, 80};
@@ -34,15 +32,17 @@ int main(void) {
 
     while (run) {
         struct timespec ts_debut;
-        clock_gettime(CLOCK_REALTIME, &ts_debut);
+        clock_gettime(CLOCK_MONOTONIC, &ts_debut);
 
         // Affichage
         afficher_terrain(&terrain, objects, size_objects);
+        printf("avancer : z ; reculer : s ; doite : q ; gauche : d\r\n");
+        printf("quitter : n");
 
         // NPC actions
         for (int i = 0; i < size_objects; ++i) {
             if (objects[i]->type == ENEMY) {
-            // printf("ennemy bougé\n");
+            // printf("ennemy bougé²");
             }
         }
 
@@ -69,9 +69,17 @@ int main(void) {
         }
 
         struct timespec ts_fin;
-        clock_gettime(CLOCK_REALTIME, &ts_fin);
+        clock_gettime(CLOCK_MONOTONIC, &ts_fin);
         double temps_s = ts_fin.tv_sec - ts_debut.tv_sec;
-        double remaining_time = frame_time - temps_s;
-        sleep(remaining_time);
+        double temps_ns = ts_fin.tv_nsec - ts_debut.tv_nsec;
+        double elapsed = temps_s + temps_ns / 1e9;
+
+        double remaining = frame_time - elapsed;
+        if (remaining > 0) {
+            struct timespec ts = {.tv_sec = (time_t)remaining,
+                                    .tv_nsec = (remaining - (time_t)remaining) * 1e9};
+            nanosleep(&ts, NULL);
+        }
     }
+    printf("\e[?25h");
 }

@@ -17,6 +17,7 @@ void set_position(struct terrain* terrain, struct object* o, int new_x, int new_
 }
 
 void afficher_terrain(struct terrain* terrain, struct object* o_presents[], int nb_obj) {
+    printf("\033[H");
     for (int y = 0; y < terrain->hauteur; ++y) {
         for (int x = 0; x < terrain->largeur; ++x) {
             int printed = 0;
@@ -32,6 +33,5 @@ void afficher_terrain(struct terrain* terrain, struct object* o_presents[], int 
                 printf(".");
             }
         }
-        printf("\n");
     }
 }
