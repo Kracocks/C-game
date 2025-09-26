@@ -45,7 +45,7 @@ int main(void) {
             if (objects[i]->type == ENEMY) {
                 set_position(&terrain, objects[i], objects[i]->pos_x, objects[i]->pos_y+1);
                 if (collision(objects[i], &player)) {
-                    return 0;
+                    run = 0;
                 }
             }
         }
@@ -86,4 +86,5 @@ int main(void) {
         }
     }
     printf("\e[?25h\r\n");
+    return 0;
 }
