@@ -46,14 +46,10 @@ int main(void) {
         // NPC actions
         for (int i = 0; i < size_objects; ++i) {
             if (objects[i]->type == ENEMY) {
-<<<<<<< HEAD
-            // printf("ennemy bougé");
-=======
                 set_position(&terrain, objects[i], objects[i]->pos_x, objects[i]->pos_y+1);
                 if (collision(objects[i], &player)) {
                     run = 0;
                 }
->>>>>>> d4097d16079369a5ea0192a186a19842a6c95644
             }
         }
 
