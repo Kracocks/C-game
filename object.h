@@ -14,6 +14,7 @@ struct object {
     int pos_y;
     int hauteur;
     int largeur;
+    int vitesse; // Plus la valeur est petite, plus il est rapide
     char repr;
     enum Type type;
 };

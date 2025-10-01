@@ -18,19 +18,21 @@ int main(void) {
 	// Set frame
 	double frame_time = 1.0 / FPS;
 
-	// Set user action
-    printf("\e[?25l"); // Enlever le curseur
+	// Préparer le terminal
+    printf("\033[?25l"); // Enlever le curseur
     printf("\033[8;%i;%it", HAUTEUR_TERRAIN+3, LARGEUR_TERRAIN);
     set_conio_terminal_mode();
 
     // Set terrain
     struct terrain terrain = {HAUTEUR_TERRAIN, LARGEUR_TERRAIN};
-    struct object player = {12, 12, 10, 10, 'm', PLAYER};
-    struct object idiot = {0, 0, 10, 10, 'i', ENEMY};
+    struct object player = {12, 12, 10, 10, 1, 'm', PLAYER};
+    struct object idiot = {0, 0, 10, 10, 10, 'i', ENEMY};
     struct object* objects[] = {&player, &idiot};
     int size_objects = sizeof(objects) / sizeof(objects[0]);
 
+    // Variables
     int run = 1;
+    int nb_frame = 0;
     char user_input;
 
     while (run) {
@@ -45,11 +47,29 @@ int main(void) {
 
         // NPC actions
         for (int i = 0; i < size_objects; ++i) {
-            if (objects[i]->type == ENEMY) {
-                set_position(&terrain, objects[i], objects[i]->pos_x, objects[i]->pos_y+1);
-                if (collision(objects[i], &player)) {
-                    run = 0;
-                }
+            struct object* object = objects[i];
+            switch (objects[i]->type) {
+
+                case PLAYER:
+                    break;
+                case ENEMY:
+                  if (nb_frame % object->vitesse == 0) {
+                    set_position(&terrain, object, object->pos_x,
+                                 object->pos_y + 1);
+                  }
+                    if (collision(object, &player)) {
+                        run = 0;
+                    }
+                    break;
+                case NPC:
+                    break;
+                case WALL:
+                    break;
+                case ITEM:
+                    break;
+            }
+            if (object->type == ENEMY) {
+                
             }
         }
 
@@ -83,11 +103,13 @@ int main(void) {
 
         double remaining = frame_time - elapsed;
         if (remaining > 0) {
-            struct timespec ts = {.tv_sec = (time_t)remaining,
-                                    .tv_nsec = (remaining - (time_t)remaining) * 1e9};
+            struct timespec ts = {.tv_sec = (time_t)remaining, .tv_nsec = (remaining - (time_t)remaining) * 1e9};
             nanosleep(&ts, NULL);
         }
+        if (nb_frame >= 1000000000) // remise a zero du compteur de frame pour éviter de dépasser la limite
+            nb_frame = 0;
+        nb_frame++;
     }
-    printf("\e[?25h\r\n");
+    printf("\033[?25h\r\n");
     return 0;
 }
