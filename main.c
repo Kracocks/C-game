@@ -11,17 +11,20 @@
 #include <unistd.h>
 
 #define FPS 60
+#define HAUTEUR_TERRAIN 40
+#define LARGEUR_TERRAIN 80
 
 int main(void) {
 	// Set frame
 	double frame_time = 1.0 / FPS;
 
 	// Set user action
-    printf("\e[?25l");
+    printf("\e[?25l"); // Enlever le curseur
+    printf("\033[8;%i;%it", HAUTEUR_TERRAIN+3, LARGEUR_TERRAIN);
     set_conio_terminal_mode();
 
     // Set terrain
-    struct terrain terrain = {30, 80};
+    struct terrain terrain = {HAUTEUR_TERRAIN, LARGEUR_TERRAIN};
     struct object player = {12, 12, 10, 10, 'm', PLAYER};
     struct object idiot = {0, 0, 10, 10, 'i', ENEMY};
     struct object* objects[] = {&player, &idiot};
@@ -42,7 +45,7 @@ int main(void) {
         // NPC actions
         for (int i = 0; i < size_objects; ++i) {
             if (objects[i]->type == ENEMY) {
-            // printf("ennemy bougé²");
+            // printf("ennemy bougé");
             }
         }
 
